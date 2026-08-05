@@ -1,8 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
-import 'dotenv/config';
 import { connectDB } from './config/db.js'
+import userRouter from './routes/userRoute.js';
 
 const app = express();
 const port = 5000;
@@ -27,6 +29,9 @@ connectDB();
 
 
 // Routes
+app.use('/api/users', userRouter);
+
+
 app.get('/', (req, res) => {
     res.send('API WORKING')
 })

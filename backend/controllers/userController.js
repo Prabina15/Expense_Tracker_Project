@@ -194,3 +194,5 @@ export async function updatePassword(req, res) {
         });
     }
 }
+
+export default { registerUser, loginUser, getCurrentUser, updateProfile, updatePassword}
