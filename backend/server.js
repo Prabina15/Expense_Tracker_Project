@@ -5,6 +5,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import { connectDB } from './config/db.js'
 import userRouter from './routes/userRoute.js';
+import incomeRouter from "./routes/incomeRoute.js";
 
 const app = express();
 const port = 5000;
@@ -30,6 +31,7 @@ connectDB();
 
 // Routes
 app.use('/api/users', userRouter);
+app.use('/api/income', incomeRouter);
 
 
 app.get('/', (req, res) => {
