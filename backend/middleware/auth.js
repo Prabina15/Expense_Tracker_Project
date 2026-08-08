@@ -1,9 +1,16 @@
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "secret";
-
 export default async function authMiddleware(req, res, next){
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+        console.error("FATAL ERROR: JWT_SECRET is not defined in the environment variables.");
+        return res.status(500).json({
+            success: false,
+            message: "Internal server configuration error"
+        });
+    }
+
     //grab the token
     const authHeader = req.headers.authorization;
     if(!authHeader || !authHeader.startsWith("Bearer ")){
@@ -15,7 +22,7 @@ export default async function authMiddleware(req, res, next){
     const token = authHeader.split(" ")[1]; // Remove "Bearer " from the beginning
 
     try {
-        const payload = jwt.verify(token, JWT_SECRET);
+        const payload = jwt.verify(token, jwtSecret);
         const user = await User.findById(payload.userId).select("-password");
         if(!user){
             return res.status(401).json({

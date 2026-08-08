@@ -1,5 +1,15 @@
 import dotenv from "dotenv";
 dotenv.config();
+
+// Enforce environment validation on startup
+const requiredEnvVars = ["JWT_SECRET", "MONGO_URI"];
+for (const envVar of requiredEnvVars) {
+    if (!process.env[envVar]) {
+        console.error(`FATAL STARTUP ERROR: Required environment variable "${envVar}" is missing.`);
+        process.exit(1);
+    }
+}
+
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
@@ -10,7 +20,7 @@ import expenseRouter from "./routes/expenseRoute.js";
 import dashboardRouter from "./routes/dashboardRoute.js";
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 //Middlewares
 

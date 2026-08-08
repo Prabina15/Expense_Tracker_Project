@@ -5,11 +5,14 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 //Register a user
 
-const JWT_SECRET = "secret";
-const TOKEN_EXPIRES='24h';
-
-const createToken = (userId)=>
-    jwt.sign({userId}, JWT_SECRET, {expiresIn: TOKEN_EXPIRES});
+const createToken = (userId) => {
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+        throw new Error("JWT_SECRET is not defined in the environment variables.");
+    }
+    const tokenExpires = process.env.JWT_EXPIRES_IN || '24h';
+    return jwt.sign({ userId }, jwtSecret, { expiresIn: tokenExpires });
+};
 
 export async function registerUser(req, res) {
     const {name, email, password} = req.body;
