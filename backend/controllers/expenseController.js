@@ -63,12 +63,18 @@ export async function updateExpense(req, res) {
 
     const {id} = req.params;
     const userId = req.user._id;
-    const {description, amount} = req.body;
+    const {description, amount, category, date} = req.body;
 
     try {
+        const updateFields = {};
+        if (description !== undefined) updateFields.description = description;
+        if (amount !== undefined) updateFields.amount = amount;
+        if (category !== undefined) updateFields.category = category;
+        if (date !== undefined) updateFields.date = new Date(date);
+
         const updatedExpense = await expenseModel.findOneAndUpdate(
             {_id:id, userId},
-            {description, amount},
+            updateFields,
             {new:true}  
         );
         if(!updatedExpense){
@@ -96,7 +102,7 @@ export async function updateExpense(req, res) {
 export async function deleteExpense(req, res) {
      const userId = req.user._id;
         try {
-            const expense = await expenseModel.findByIdAndDelete({_id : req.params.id, userId});
+            const expense = await expenseModel.findOneAndDelete({_id: req.params.id, userId});
             if(!expense){
                 return res.status(404).json({
                     success: false,

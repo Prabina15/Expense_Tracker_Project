@@ -61,12 +61,18 @@ export async function getAllIncome(req, res) {
 export async function updateIncome(req, res) {
     const {id} = req.params;
     const userId = req.user._id;
-    const {description, amount} = req.body;
+    const {description, amount, category, date} = req.body;
 
     try {
+        const updateFields = {};
+        if (description !== undefined) updateFields.description = description;
+        if (amount !== undefined) updateFields.amount = amount;
+        if (category !== undefined) updateFields.category = category;
+        if (date !== undefined) updateFields.date = new Date(date);
+
         const updatedIncome = await incomeModel.findOneAndUpdate(
             {_id:id, userId},
-            {description, amount},
+            updateFields,
             {new:true}  
         );
         if(!updatedIncome){
@@ -94,7 +100,7 @@ export async function updateIncome(req, res) {
 export async function deleteIncome(req, res){
     const userId = req.user._id;
     try {
-        const income = await incomeModel.findByIdAndDelete({_id:req.params.id, userId});
+        const income = await incomeModel.findOneAndDelete({_id: req.params.id, userId});
         if(!income){
             return res.status(404).json({
                 success: false,
