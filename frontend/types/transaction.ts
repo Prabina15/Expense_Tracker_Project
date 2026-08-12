@@ -9,6 +9,12 @@ export interface Transaction {
   updatedAt: string;
 }
 
+export type TransactionType = "income" | "expense";
+
+export interface TransactionWithType extends Transaction {
+  type: TransactionType;
+}
+
 export interface TransactionInput {
   description: string;
   amount: number;
