@@ -18,6 +18,7 @@ import userRouter from './routes/userRoute.js';
 import incomeRouter from "./routes/incomeRoute.js";
 import expenseRouter from "./routes/expenseRoute.js";
 import dashboardRouter from "./routes/dashboardRoute.js";
+import categoryRouter from "./routes/categoryRoute.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -46,6 +47,7 @@ app.use('/api/users', userRouter);
 app.use('/api/income', incomeRouter);
 app.use('/api/expense', expenseRouter);
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/categories', categoryRouter);
 
 app.get('/', (req, res) => {
     res.send('API WORKING')

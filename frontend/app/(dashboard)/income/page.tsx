@@ -8,7 +8,8 @@ import { Plus, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { INCOME_CATEGORIES } from "@/lib/constants";
+import { getMergedCategoryNames } from "@/lib/categoryMerge";
+import { useCategoryList } from "@/hooks/useCategories";
 import {
   useAddIncome,
   useDeleteIncome,
@@ -18,7 +19,7 @@ import {
 import { TransactionFormDialog } from "@/components/shared/TransactionFormDialog";
 import { DeleteTransactionDialog } from "@/components/shared/DeleteTransactionDialog";
 import { TransactionsTable } from "@/components/shared/TransactionTable";
-import { TransactionsTableSkeleton } from "@/components/shared/RansactionTableSkeleton";
+import { TransactionsTableSkeleton } from "@/components/shared/TransactionsTableSkeleton";
 import { TransactionsError } from "@/components/shared/TransactionError";
 import type { Transaction, TransactionInput } from "@/types/transaction";
 
@@ -31,6 +32,11 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 export default function IncomePage() {
   const { data: income, isLoading, isError, refetch } = useIncomeList();
+  const { data: customCategories } = useCategoryList();
+  const incomeCategoryNames = getMergedCategoryNames(
+    "income",
+    customCategories ?? []
+  );
 
   const addIncome = useAddIncome();
   const updateIncome = useUpdateIncome();
@@ -153,7 +159,7 @@ export default function IncomePage() {
         onOpenChange={setFormOpen}
         mode={formMode}
         transactionType="income"
-        categories={INCOME_CATEGORIES}
+        categories={incomeCategoryNames}
         initialData={activeTransaction}
         isSubmitting={addIncome.isPending || updateIncome.isPending}
         onSubmit={handleSubmit}

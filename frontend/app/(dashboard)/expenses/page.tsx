@@ -8,7 +8,8 @@ import { Plus, TrendingDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EXPENSE_CATEGORIES } from "@/lib/constants";
+import { getMergedCategoryNames } from "@/lib/categoryMerge";
+import { useCategoryList } from "@/hooks/useCategories";
 import {
   useAddExpense,
   useDeleteExpense,
@@ -18,7 +19,7 @@ import {
 import { TransactionFormDialog } from "@/components/shared/TransactionFormDialog";
 import { DeleteTransactionDialog } from "@/components/shared/DeleteTransactionDialog";
 import { TransactionsTable } from "@/components/shared/TransactionTable";
-import { TransactionsTableSkeleton } from "@/components/shared/RansactionTableSkeleton";
+import { TransactionsTableSkeleton } from "@/components/shared/TransactionsTableSkeleton";
 import { TransactionsError } from "@/components/shared/TransactionError";
 import type { Transaction, TransactionInput } from "@/types/transaction";
 
@@ -31,6 +32,11 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 export default function ExpensesPage() {
   const { data: expenses, isLoading, isError, refetch } = useExpenseList();
+  const { data: customCategories } = useCategoryList();
+  const expenseCategoryNames = getMergedCategoryNames(
+    "expense",
+    customCategories ?? []
+  );
 
   const addExpense = useAddExpense();
   const updateExpense = useUpdateExpense();
@@ -156,7 +162,7 @@ export default function ExpensesPage() {
         onOpenChange={setFormOpen}
         mode={formMode}
         transactionType="expense"
-        categories={EXPENSE_CATEGORIES}
+        categories={expenseCategoryNames}
         initialData={activeTransaction}
         isSubmitting={addExpense.isPending || updateExpense.isPending}
         onSubmit={handleSubmit}

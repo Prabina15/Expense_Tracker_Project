@@ -14,7 +14,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/lib/constants";
+import { getMergedCategoryNames } from "@/lib/categoryMerge";
+import { useCategoryList } from "@/hooks/useCategories";
 import { useAllTransactions } from "@/hooks/useAllTransactions";
 import { useAddIncome, useDeleteIncome, useUpdateIncome } from "@/hooks/useIncome";
 import {
@@ -24,7 +25,7 @@ import {
 } from "@/hooks/useExpense";
 import { TransactionFormDialog } from "@/components/shared/TransactionFormDialog";
 import { DeleteTransactionDialog } from "@/components/shared/DeleteTransactionDialog";
-import { TransactionsTableSkeleton } from "@/components/shared/RansactionTableSkeleton";
+import { TransactionsTableSkeleton } from "@/components/shared/TransactionsTableSkeleton";
 import { TransactionsError } from "@/components/shared/TransactionError";
 import {
   TransactionFilters,
@@ -50,6 +51,13 @@ const PAGE_SIZE = 8;
 
 export default function TransactionsPage() {
   const { transactions, isLoading, isError, refetch } = useAllTransactions();
+  const { data: customCategories } = useCategoryList();
+
+  const allCategoryNames = useMemo(() => {
+    const income = getMergedCategoryNames("income", customCategories ?? []);
+    const expense = getMergedCategoryNames("expense", customCategories ?? []);
+    return Array.from(new Set([...income, ...expense])).sort();
+  }, [customCategories]);
 
   const addIncome = useAddIncome();
   const updateIncome = useUpdateIncome();
@@ -234,7 +242,7 @@ export default function TransactionsPage() {
                   <ChevronDown className="size-3.5" />
                 </Button>
               }
-            />
+              />  
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => openAddDialog("income")}>
                 Add Income
@@ -258,6 +266,7 @@ export default function TransactionsPage() {
             onCategoryFilterChange={(v) =>
               updateFilters(() => setCategoryFilter(v))
             }
+            categories={allCategoryNames}
             sort={sort}
             onSortChange={setSort}
             onClear={() =>
@@ -300,7 +309,7 @@ export default function TransactionsPage() {
         onOpenChange={setFormOpen}
         mode={formMode}
         transactionType={formType}
-        categories={formType === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES}
+        categories={getMergedCategoryNames(formType, customCategories ?? [])}
         initialData={activeTransaction}
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}

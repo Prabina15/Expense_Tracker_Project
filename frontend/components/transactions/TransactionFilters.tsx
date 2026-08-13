@@ -10,7 +10,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/lib/constants";
 
 export type TypeFilter = "all" | "income" | "expense";
 export type SortOption = "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
@@ -22,15 +21,12 @@ interface TransactionFiltersProps {
   onTypeFilterChange: (value: TypeFilter) => void;
   categoryFilter: string;
   onCategoryFilterChange: (value: string) => void;
+  categories: string[];
   sort: SortOption;
   onSortChange: (value: SortOption) => void;
   onClear: () => void;
   hasActiveFilters: boolean;
 }
-
-const ALL_CATEGORIES = Array.from(
-  new Set([...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES])
-).sort();
 
 export function TransactionFilters({
   search,
@@ -39,6 +35,7 @@ export function TransactionFilters({
   onTypeFilterChange,
   categoryFilter,
   onCategoryFilterChange,
+  categories,
   sort,
   onSortChange,
   onClear,
@@ -79,7 +76,7 @@ export function TransactionFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All categories</SelectItem>
-          {ALL_CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <SelectItem key={cat} value={cat}>
               {cat}
             </SelectItem>

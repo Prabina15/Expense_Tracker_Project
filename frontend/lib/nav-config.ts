@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   PieChart,
   Settings,
+  Tags,
   type LucideIcon,
 } from "lucide-react";
 
@@ -43,6 +44,11 @@ export const navigationConfig: NavGroup[] = [
         title: "Transactions",
         href: "/transactions",
         icon: ArrowLeftRight,
+      },
+      {
+        title: "Categories",
+        href: "/categories",
+        icon: Tags,
       },
       {
         title: "Analytics",
