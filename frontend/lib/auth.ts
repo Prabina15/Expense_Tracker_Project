@@ -45,6 +45,44 @@ export async function loginUser(
   return response.data;
 }
 
+export interface UpdateProfileData {
+  name: string;
+  email: string;
+}
+
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface MessageResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function updateProfile(
+  data: UpdateProfileData
+): Promise<User> {
+  const response = await api.put<{
+    success: boolean;
+    user: { _id?: string; id?: string; name: string; email: string };
+  }>("/users/profile", data);
+
+  const userData = response.data.user;
+  return {
+    id: userData.id || userData._id || "",
+    name: userData.name,
+    email: userData.email,
+  };
+}
+
+export async function changePassword(
+  data: ChangePasswordData
+): Promise<MessageResponse> {
+  const response = await api.put<MessageResponse>("/users/password", data);
+  return response.data;
+}
+
 export async function getCurrentUser(): Promise<User> {
   const response = await api.get<{
     success: boolean;

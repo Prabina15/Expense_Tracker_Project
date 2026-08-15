@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, LogOut } from "lucide-react";
+import { Bell, Search, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -90,7 +90,7 @@ export function Header() {
               <span className="text-xs font-semibold leading-none text-foreground">
                 {user?.name || "User"}
               </span>
-              <span className="text-[11px] text-muted-foreground leading-none mt-1 truncate max-w-120px">
+              <span className="text-[11px] text-muted-foreground leading-none mt-1 truncate max-w-[120px]">
                 {user?.email || "Account"}
               </span>
             </div>
@@ -107,6 +107,13 @@ export function Header() {
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => router.push("/settings")}
+              className="cursor-pointer"
+            >
+              <Settings className="size-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={handleLogout}
               variant="destructive"

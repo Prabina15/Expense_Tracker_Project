@@ -1,8 +1,23 @@
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+"use client";
+
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { PieChart } from "lucide-react";
 
+import { useAnalyticsOverview } from "@/hooks/useAnalytics";
+import { MonthRangeSelector } from "@/components/analytics/MonthRangeSelector";
+import { AnalyticsSummaryCards } from "@/components/analytics/AnalyticsSummaryCards";
+import { IncomeExpenseTrendChart } from "@/components/analytics/IncomeExpenseTrendChart";
+import { SavingsTrendChart } from "@/components/analytics/SavingsTrendChart";
+import { CategoryDistributionChart } from "@/components/analytics/CategoryDistributionChart";
+import { AnalyticsSkeleton } from "@/components/analytics/AnalyticsSkeleton";
+import { TransactionsError } from "@/components/shared/TransactionError";
+
 export default function AnalyticsPage() {
+  const [months, setMonths] = useState(6);
+  const { data, isLoading, isError, refetch, isFetching } =
+    useAnalyticsOverview(months);
+
   return (
     <div className="w-full space-y-6">
       {/* Page Header */}
@@ -15,29 +30,49 @@ export default function AnalyticsPage() {
             Financial insights, trends, and reporting.
           </p>
         </div>
-        <Badge
-          variant="outline"
-          className="w-fit gap-1.5 px-3 py-1 text-xs font-medium border-primary/30 text-primary bg-primary/10"
-        >
-          <PieChart className="size-3.5" />
-          Financial Insights
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className="w-fit gap-1.5 px-3 py-1 text-xs font-medium border-primary/30 text-primary bg-primary/10"
+          >
+            <PieChart className="size-3.5" />
+            {isFetching && !isLoading ? "Syncing..." : "Financial Insights"}
+          </Badge>
+          <MonthRangeSelector value={months} onChange={setMonths} />
+        </div>
       </div>
 
-      {/* Main Content Placeholder Container */}
-      <Card className="w-full border-dashed border-2 border-border/80 bg-muted/20">
-        <div className="flex flex-col items-center justify-center text-center p-8 md:p-12 space-y-3 max-w-xl mx-auto w-full">
-          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-1">
-            <PieChart className="size-6" />
+      {isLoading && <AnalyticsSkeleton />}
+
+      {isError && !isLoading && (
+        <TransactionsError noun="your analytics" onRetry={() => refetch()} />
+      )}
+
+      {!isLoading && !isError && data && (
+        <>
+          <AnalyticsSummaryCards data={data} />
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <IncomeExpenseTrendChart data={data.trend} />
+            <SavingsTrendChart data={data.trend} />
           </div>
-          <CardTitle className="text-xl font-semibold text-foreground">
-            Analytics & Reporting Dashboard
-          </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground leading-relaxed max-w-md">
-            Interactive Recharts visualizations, cash flow trends, budget analytics, and monthly reports will be populated in upcoming phases.
-          </CardDescription>
-        </div>
-      </Card>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <CategoryDistributionChart
+              title="Expense Distribution"
+              description="Where your money went, by category"
+              data={data.expenseDistribution}
+              emptyLabel="No expenses recorded in this range yet."
+            />
+            <CategoryDistributionChart
+              title="Income Distribution"
+              description="Where your money came from, by category"
+              data={data.incomeDistribution}
+              emptyLabel="No income recorded in this range yet."
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

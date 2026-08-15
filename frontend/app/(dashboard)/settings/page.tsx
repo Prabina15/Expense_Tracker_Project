@@ -1,6 +1,9 @@
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Settings } from "lucide-react";
+
+import { ProfileForm } from "@/components/settings/ProfileForm";
+import { PasswordForm } from "@/components/settings/PasswordForm";
+import { AppearanceCard } from "@/components/settings/AppearanceCard";
 
 export default function SettingsPage() {
   return (
@@ -24,20 +27,12 @@ export default function SettingsPage() {
         </Badge>
       </div>
 
-      {/* Main Content Placeholder Container */}
-      <Card className="w-full border-dashed border-2 border-border/80 bg-muted/20">
-        <div className="flex flex-col items-center justify-center text-center p-8 md:p-12 space-y-3 max-w-xl mx-auto w-full">
-          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-1">
-            <Settings className="size-6" />
-          </div>
-          <CardTitle className="text-xl font-semibold text-foreground">
-            User & System Preferences
-          </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground leading-relaxed max-w-md">
-            Account settings, default currency selection, notification thresholds, and security preferences will be configured here.
-          </CardDescription>
-        </div>
-      </Card>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ProfileForm />
+        <PasswordForm />
+      </div>
+
+      <AppearanceCard />
     </div>
   );
 }
