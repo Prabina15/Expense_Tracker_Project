@@ -32,8 +32,8 @@ npm run dev
 
 Create a .env.local file and add the required environment variables.
 
-Future Improvements
-Advanced financial analytics
-Export transactions
-Budget management
-Improved reporting and visualization
+## Future Improvements
+- Advanced financial analytics
+- Export transactions
+- Budget management
+- Improved reporting and visualization
